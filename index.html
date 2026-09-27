@@ -14,10 +14,11 @@
   <meta property="og:title" content="Arias Landscaping | Landscaping & Lawn Care in Savannah, GA">
   <meta property="og:description" content="Lawn maintenance, yard cleanups, hedge trimming, mulch and pine straw installation in Savannah and surrounding areas. Free estimates.">
   <meta property="og:url" content="https://ariaslandscaping.vercel.app/">
-  <meta property="og:image" content="https://ariaslandscaping.vercel.app/images/og-image.png">
+  <meta property="og:image" content="https://ariaslandscaping.vercel.app/images/og-image.jpg">
   <meta name="twitter:card" content="summary_large_image">
 
   <link rel="icon" href="images/favicon.svg" type="image/svg+xml">
+  <link rel="preload" as="image" href="images/logo.webp">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -66,11 +67,8 @@
   <!-- ================= HEADER ================= -->
   <header class="site-header" id="top">
     <div class="container header-inner">
-      <a class="wordmark" href="#top" aria-label="Arias Landscaping — home">
-        <span class="wordmark-mark" aria-hidden="true">
-          <svg viewBox="0 0 32 32" width="34" height="34"><path d="M16 29c0-9 3-16 11-23-2 9-5 16-11 23Zm0 0C16 20 13 13 5 6c2 9 5 16 11 23Z" fill="currentColor"/></svg>
-        </span>
-        <span class="wordmark-text"><span>ARIAS</span><span>LANDSCAPING</span></span>
+      <a class="brand" href="#top" aria-label="Arias Landscaping — home">
+        <img src="images/logo.webp" alt="Arias Landscaping" width="480" height="184" class="brand-logo" fetchpriority="high">
       </a>
 
       <nav class="main-nav" id="main-nav" aria-label="Main navigation">
@@ -249,25 +247,133 @@
           <p class="eyebrow eyebrow-light">Service Area</p>
           <h2 id="area-heading">Proudly Serving Savannah &amp; Surrounding Areas</h2>
           <p>Arias Landscaping serves homeowners and property owners throughout Savannah and the communities in the surrounding region. We're generally able to take on properties within roughly 60 miles of Savannah.</p>
+          <!-- Address checker: geocodes through /api/geocode (server-side) and measures distance from Savannah. -->
+          <div class="area-checker" id="area-checker">
+            <h3 id="checker-heading">Do We Service Your Area?</h3>
+            <p class="checker-sub">Enter your property address to see if you're within our Savannah-area service range.</p>
+            <form class="checker-form" id="checker-form" novalidate>
+              <div class="checker-field">
+                <label for="checker-address" class="sr-only">Property address</label>
+                <input type="text" id="checker-address" name="address" placeholder="Street, City, State, ZIP" autocomplete="street-address" inputmode="text" enterkeyhint="search" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="checker-suggestions" aria-haspopup="listbox" required>
+                <ul class="checker-suggestions" id="checker-suggestions" role="listbox" aria-label="Address suggestions" hidden></ul>
+              </div>
+              <button type="submit" class="btn btn-primary btn-lg" id="checker-submit">
+                <span class="btn-label">Check Availability</span>
+                <span class="btn-spinner" aria-hidden="true"></span>
+              </button>
+            </form>
+            <p class="checker-status" id="checker-status" aria-live="polite"></p>
+            <div class="checker-result" id="checker-result" role="status" aria-live="polite" hidden></div>
+          </div>
           <p class="area-question"><strong>Not sure if we service your area?</strong> Send us a request or call <a href="tel:9126564577">912-656-4577</a>.</p>
           <div class="hero-actions">
-            <a class="btn btn-primary btn-lg" href="#request">Check Availability</a>
+            <a class="btn btn-light btn-lg" href="#request">Request Services</a>
             <a class="btn btn-light btn-lg" href="tel:9126564577">Call Now</a>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ================= REQUEST FORM ================= -->
-    <section class="section section-alt" id="request" aria-labelledby="request-heading">
-      <div class="container">
-        <div class="section-head">
-          <p class="eyebrow">Free Estimates</p>
-          <h2 id="request-heading">Request Landscaping Services</h2>
-          <p class="section-intro">Tell us a little about your property and the work you need. Arias Landscaping will review your request and contact you about your free estimate.</p>
+    <!-- ================= FINAL CTA ================= -->
+    <section class="section final-cta" aria-labelledby="final-heading">
+      <div class="container final-inner">
+        <div>
+          <h2 id="final-heading">Ready to Improve Your Property?</h2>
+          <p>Tell us what your property needs and request your free estimate today.</p>
+          <div class="hero-actions">
+            <a class="btn btn-primary btn-lg" href="#request">Request Services</a>
+            <a class="btn btn-light btn-lg" href="tel:9126564577">Call 912-656-4577</a>
+          </div>
         </div>
+        <address class="contact-card">
+          <strong>Arias Landscaping</strong>
+          <span>Savannah, Georgia</span>
+          <a href="tel:9126564577">912-656-4577</a>
+          <a href="mailto:ariaslandscaping912@gmail.com">ariaslandscaping912@gmail.com</a>
+          <span class="contact-area">Serving Savannah and surrounding areas.</span>
+        </address>
+      </div>
+    </section>
+  </main>
 
-        <div class="form-wrap">
+  <!-- ================= FOOTER ================= -->
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <a class="brand brand-footer" href="#top" aria-label="Arias Landscaping — back to top">
+          <img src="images/logo-white.webp" alt="Arias Landscaping" width="480" height="184" class="brand-logo" loading="lazy">
+        </a>
+        <p>Landscaping and lawn care for Savannah, GA and surrounding areas. Free estimates.</p>
+      </div>
+      <nav class="footer-col" aria-label="Footer navigation">
+        <h3>Navigate</h3>
+        <ul>
+          <li><a href="#top">Home</a></li>
+          <li><a href="#services">Services</a></li>
+          <li><a href="#our-work">Our Work</a></li>
+          <li><a href="#service-area">Service Area</a></li>
+          <li><a href="#request">Request Services</a></li>
+        </ul>
+      </nav>
+      <div class="footer-col">
+        <h3>Services</h3>
+        <ul>
+          <li><a href="#services">Lawn Mowing, Edging &amp; Trimming</a></li>
+          <li><a href="#services">Bush &amp; Hedge Trimming</a></li>
+          <li><a href="#services">Yard Cleanups</a></li>
+          <li><a href="#services">Mulch &amp; Flower Bed Installation</a></li>
+          <li><a href="#services">Planting Flowers &amp; Shrubs</a></li>
+          <li><a href="#services">Pine Straw Installation</a></li>
+          <li><a href="#services">Weekly &amp; Biweekly Lawn Maintenance</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h3>Contact</h3>
+        <ul class="footer-contact">
+          <li><span>Phone</span><a href="tel:9126564577">912-656-4577</a></li>
+          <li><span>Email</span><a href="mailto:ariaslandscaping912@gmail.com">ariaslandscaping912@gmail.com</a></li>
+          <li><span>Service Area</span>Savannah, GA &amp; Surrounding Areas</li>
+          <li><span>Estimates</span>Free Estimates</li>
+        </ul>
+      </div>
+    </div>
+    <div class="container footer-bottom">
+      <p>&copy; <span id="year"></span> Arias Landscaping. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- Mobile sticky CTA -->
+  <div class="mobile-cta" id="mobile-cta">
+    <a class="btn btn-outline" href="tel:9126564577">
+      <svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1l-2.3 2.2Z"/></svg>
+      Call
+    </a>
+    <a class="btn btn-primary" href="#request">Request Services</a>
+  </div>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Enlarged project photo" hidden>
+    <button class="lightbox-close" id="lightbox-close" aria-label="Close">&times;</button>
+    <button class="lightbox-nav lightbox-prev" id="lightbox-prev" aria-label="Previous photo">&#8249;</button>
+    <figure class="lightbox-figure">
+      <div class="lightbox-media" id="lightbox-media"></div>
+      <figcaption id="lightbox-caption"></figcaption>
+    </figure>
+    <button class="lightbox-nav lightbox-next" id="lightbox-next" aria-label="Next photo">&#8250;</button>
+  </div>
+
+
+  <!-- ================= REQUEST SERVICES MODAL ================= -->
+  <div class="modal" id="request-modal" role="dialog" aria-modal="true" aria-labelledby="request-heading" hidden>
+    <div class="modal-backdrop" data-modal-close></div>
+    <div class="modal-panel" role="document">
+      <button type="button" class="modal-close" id="request-modal-close" aria-label="Close request form" data-modal-close>&times;</button>
+      <div class="modal-head">
+        <p class="eyebrow">Free Estimates</p>
+        <h2 id="request-heading">Request Landscaping Services</h2>
+        <p class="section-intro">Tell us a little about your property and the work you need. Arias Landscaping will review your request and contact you about your free estimate.</p>
+      </div>
+      <div class="form-wrap">
           <!--
             FORM DELIVERY: submissions go to Formspree, which emails ariaslandscaping912@gmail.com.
             The endpoint is set in script.js (FORM_ENDPOINT). No secrets live in this code.
@@ -410,96 +516,7 @@
             <a class="btn btn-primary btn-lg" href="tel:9126564577">Call 912-656-4577</a>
           </div>
         </div>
-      </div>
-    </section>
-
-    <!-- ================= FINAL CTA ================= -->
-    <section class="section final-cta" aria-labelledby="final-heading">
-      <div class="container final-inner">
-        <div>
-          <h2 id="final-heading">Ready to Improve Your Property?</h2>
-          <p>Tell us what your property needs and request your free estimate today.</p>
-          <div class="hero-actions">
-            <a class="btn btn-primary btn-lg" href="#request">Request Services</a>
-            <a class="btn btn-light btn-lg" href="tel:9126564577">Call 912-656-4577</a>
-          </div>
-        </div>
-        <address class="contact-card">
-          <strong>Arias Landscaping</strong>
-          <span>Savannah, Georgia</span>
-          <a href="tel:9126564577">912-656-4577</a>
-          <a href="mailto:ariaslandscaping912@gmail.com">ariaslandscaping912@gmail.com</a>
-          <span class="contact-area">Serving Savannah and surrounding areas.</span>
-        </address>
-      </div>
-    </section>
-  </main>
-
-  <!-- ================= FOOTER ================= -->
-  <footer class="site-footer">
-    <div class="container footer-grid">
-      <div class="footer-brand">
-        <a class="wordmark wordmark-footer" href="#top" aria-label="Arias Landscaping — back to top">
-          <span class="wordmark-mark" aria-hidden="true"><svg viewBox="0 0 32 32" width="30" height="30"><path d="M16 29c0-9 3-16 11-23-2 9-5 16-11 23Zm0 0C16 20 13 13 5 6c2 9 5 16 11 23Z" fill="currentColor"/></svg></span>
-          <span class="wordmark-text"><span>ARIAS</span><span>LANDSCAPING</span></span>
-        </a>
-        <p>Landscaping and lawn care for Savannah, GA and surrounding areas. Free estimates.</p>
-      </div>
-      <nav class="footer-col" aria-label="Footer navigation">
-        <h3>Navigate</h3>
-        <ul>
-          <li><a href="#top">Home</a></li>
-          <li><a href="#services">Services</a></li>
-          <li><a href="#our-work">Our Work</a></li>
-          <li><a href="#service-area">Service Area</a></li>
-          <li><a href="#request">Request Services</a></li>
-        </ul>
-      </nav>
-      <div class="footer-col">
-        <h3>Services</h3>
-        <ul>
-          <li><a href="#services">Lawn Mowing, Edging &amp; Trimming</a></li>
-          <li><a href="#services">Bush &amp; Hedge Trimming</a></li>
-          <li><a href="#services">Yard Cleanups</a></li>
-          <li><a href="#services">Mulch &amp; Flower Bed Installation</a></li>
-          <li><a href="#services">Planting Flowers &amp; Shrubs</a></li>
-          <li><a href="#services">Pine Straw Installation</a></li>
-          <li><a href="#services">Weekly &amp; Biweekly Lawn Maintenance</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h3>Contact</h3>
-        <ul class="footer-contact">
-          <li><span>Phone</span><a href="tel:9126564577">912-656-4577</a></li>
-          <li><span>Email</span><a href="mailto:ariaslandscaping912@gmail.com">ariaslandscaping912@gmail.com</a></li>
-          <li><span>Service Area</span>Savannah, GA &amp; Surrounding Areas</li>
-          <li><span>Estimates</span>Free Estimates</li>
-        </ul>
-      </div>
     </div>
-    <div class="container footer-bottom">
-      <p>&copy; <span id="year"></span> Arias Landscaping. All rights reserved.</p>
-    </div>
-  </footer>
-
-  <!-- Mobile sticky CTA -->
-  <div class="mobile-cta" id="mobile-cta">
-    <a class="btn btn-outline" href="tel:9126564577">
-      <svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1l-2.3 2.2Z"/></svg>
-      Call
-    </a>
-    <a class="btn btn-primary" href="#request">Request Services</a>
-  </div>
-
-  <!-- Lightbox -->
-  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Enlarged project photo" hidden>
-    <button class="lightbox-close" id="lightbox-close" aria-label="Close">&times;</button>
-    <button class="lightbox-nav lightbox-prev" id="lightbox-prev" aria-label="Previous photo">&#8249;</button>
-    <figure class="lightbox-figure">
-      <div class="lightbox-media" id="lightbox-media"></div>
-      <figcaption id="lightbox-caption"></figcaption>
-    </figure>
-    <button class="lightbox-nav lightbox-next" id="lightbox-next" aria-label="Next photo">&#8250;</button>
   </div>
 
   <script src="gallery-data.js"></script>

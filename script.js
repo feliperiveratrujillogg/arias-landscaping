@@ -6,7 +6,7 @@
    secret — the email address and delivery settings live in the
    Formspree dashboard, never in this code.
    ============================================================ */
-const FORM_ENDPOINT = "https://formspree.io/f/FORMSPREE_FORM_ID";
+const FORM_ENDPOINT = "https://formspree.io/f/myezbbvr";
 const MAX_PHOTOS = 8;
 const MAX_PHOTO_MB = 10;
 
@@ -44,24 +44,57 @@ const MAX_PHOTO_MB = 10;
     a.addEventListener("click", (e) => {
       const id = a.getAttribute("href");
       if (id === "#") return;
+      if (id === "#request") { e.preventDefault(); closeMenu(); openRequestModal(a); return; }
       const target = document.querySelector(id);
       if (!target) return;
       e.preventDefault();
       const y = target.getBoundingClientRect().top + window.pageYOffset - header.offsetHeight - 8;
       window.scrollTo({ top: id === "#top" ? 0 : y, behavior: "smooth" });
-      if (id === "#request") setTimeout(() => $("#name")?.focus({ preventScroll: true }), 600);
       history.replaceState(null, "", id);
     });
   });
 
-  /* ---------- Mobile sticky CTA: hide while the form is on screen ---------- */
+  /* ---------- Request Services modal ---------- */
+  const modal = $("#request-modal");
+  const modalPanel = $(".modal-panel", modal);
   const mobileCta = $("#mobile-cta");
-  const requestSection = $("#request");
-  if ("IntersectionObserver" in window) {
-    new IntersectionObserver((entries) => {
-      mobileCta.classList.toggle("is-hidden", entries[0].isIntersecting);
-    }, { threshold: 0.15 }).observe(requestSection);
+  let modalOpener = null;
+  const focusable = () => $$('a[href], button:not([disabled]), input:not([disabled]):not([type="hidden"]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])', modalPanel)
+    .filter((el) => el.offsetParent !== null || el === document.activeElement);
+
+  function openRequestModal(opener) {
+    if (!modal.hidden) return;
+    modalOpener = opener || document.activeElement;
+    modal.hidden = false;
+    document.body.classList.add("modal-open");
+    mobileCta.classList.add("is-hidden");
+    modalPanel.scrollTop = 0;
+    const first = form.hidden ? $("#form-success") : $("#name");
+    setTimeout(() => (first || $("#request-modal-close")).focus({ preventScroll: true }), 30);
   }
+  function closeRequestModal() {
+    if (modal.hidden) return;
+    modal.hidden = true;
+    document.body.classList.remove("modal-open");
+    mobileCta.classList.remove("is-hidden");
+    if (modalOpener && typeof modalOpener.focus === "function") modalOpener.focus({ preventScroll: true });
+    modalOpener = null;
+  }
+  $$("[data-modal-close]", modal).forEach((el) => el.addEventListener("click", closeRequestModal));
+  document.addEventListener("keydown", (e) => {
+    if (modal.hidden) return;
+    if (e.key === "Escape") { e.preventDefault(); closeRequestModal(); return; }
+    if (e.key === "Tab") {
+      const els = focusable();
+      if (!els.length) return;
+      const first = els[0], last = els[els.length - 1];
+      if (e.shiftKey && (document.activeElement === first || !modalPanel.contains(document.activeElement))) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    }
+  });
+  // Deep link: /#request opens the form
+  if (location.hash === "#request") setTimeout(() => openRequestModal(null), 200);
+  window.addEventListener("hashchange", () => { if (location.hash === "#request") openRequestModal(null); });
 
   /* ---------- Gallery ---------- */
   const items = Array.isArray(window.GALLERY_ITEMS) ? window.GALLERY_ITEMS : [];
@@ -307,7 +340,7 @@ const MAX_PHOTO_MB = 10;
       }
       success.hidden = false;
       success.focus();
-      success.scrollIntoView({ block: "center", behavior: "smooth" });
+      modalPanel.scrollTo({ top: 0, behavior: "smooth" });
     } catch (err) {
       status.className = "form-status is-error";
       status.textContent = "Sorry — your request didn't go through. Please try again, or call 912-656-4577 and we'll take your information over the phone.";
@@ -317,6 +350,154 @@ const MAX_PHOTO_MB = 10;
       submitBtn.classList.remove("is-loading");
       submitBtn.removeAttribute("aria-busy");
       submitBtn.disabled = false;
+    }
+  });
+
+  /* ---------- Service-area address checker ---------- */
+  const SERVICE_RADIUS_MILES = 60;
+  const SAVANNAH = { lat: 32.0809, lon: -81.0912 };
+  const checkerForm = $("#checker-form");
+  const checkerInput = $("#checker-address");
+  const checkerBtn = $("#checker-submit");
+  const checkerStatus = $("#checker-status");
+  const checkerResult = $("#checker-result");
+  const suggestList = $("#checker-suggestions");
+  let suggestions = [];
+  let activeSuggestion = -1;
+  let chosen = null; // suggestion the user picked (already has coordinates)
+  let suggestTimer = null;
+  let suggestAbort = null;
+  let checking = false;
+
+  function milesBetween(a, b) {
+    const R = 3958.7613; // Earth radius in miles
+    const toRad = (d) => (d * Math.PI) / 180;
+    const dLat = toRad(b.lat - a.lat), dLon = toRad(b.lon - a.lon);
+    const h = Math.sin(dLat / 2) ** 2 + Math.cos(toRad(a.lat)) * Math.cos(toRad(b.lat)) * Math.sin(dLon / 2) ** 2;
+    return 2 * R * Math.asin(Math.sqrt(h));
+  }
+
+  function hideSuggestions() {
+    suggestList.hidden = true; suggestList.innerHTML = ""; suggestions = []; activeSuggestion = -1;
+    checkerInput.setAttribute("aria-expanded", "false"); checkerInput.removeAttribute("aria-activedescendant");
+  }
+  function renderSuggestions() {
+    suggestList.innerHTML = "";
+    if (!suggestions.length) { hideSuggestions(); return; }
+    suggestions.forEach((sug, i) => {
+      const li = el("li", { role: "option", id: "sug-" + i, text: sug.label, "aria-selected": "false" });
+      li.addEventListener("mousedown", (e) => { e.preventDefault(); pickSuggestion(i); });
+      suggestList.appendChild(li);
+    });
+    suggestList.hidden = false;
+    checkerInput.setAttribute("aria-expanded", "true");
+  }
+  function highlight(i) {
+    activeSuggestion = i;
+    $$("li", suggestList).forEach((li, k) => li.setAttribute("aria-selected", String(k === i)));
+    if (i >= 0) checkerInput.setAttribute("aria-activedescendant", "sug-" + i);
+  }
+  function pickSuggestion(i) {
+    chosen = suggestions[i];
+    checkerInput.value = chosen.label;
+    hideSuggestions();
+    checkerInput.focus();
+  }
+  async function fetchSuggestions(q) {
+    if (suggestAbort) suggestAbort.abort();
+    suggestAbort = new AbortController();
+    try {
+      const r = await fetch("/api/geocode?mode=suggest&q=" + encodeURIComponent(q), { signal: suggestAbort.signal });
+      if (!r.ok) return;
+      const data = await r.json();
+      if (checkerInput.value.trim() !== q) return; // stale response
+      suggestions = data.suggestions || [];
+      renderSuggestions();
+    } catch (_) { /* suggestions are a convenience only */ }
+  }
+  checkerInput.addEventListener("input", () => {
+    chosen = null;
+    checkerResult.hidden = true;
+    const q = checkerInput.value.trim();
+    clearTimeout(suggestTimer);
+    if (q.length < 4) { hideSuggestions(); return; }
+    suggestTimer = setTimeout(() => fetchSuggestions(q), 300);
+  });
+  checkerInput.addEventListener("keydown", (e) => {
+    if (suggestList.hidden) return;
+    if (e.key === "ArrowDown") { e.preventDefault(); highlight(Math.min(activeSuggestion + 1, suggestions.length - 1)); }
+    else if (e.key === "ArrowUp") { e.preventDefault(); highlight(Math.max(activeSuggestion - 1, 0)); }
+    else if (e.key === "Enter" && activeSuggestion >= 0) { e.preventDefault(); pickSuggestion(activeSuggestion); }
+    else if (e.key === "Escape") { hideSuggestions(); }
+  });
+  checkerInput.addEventListener("blur", () => setTimeout(hideSuggestions, 150));
+
+  function showResult(kind, title, body, buttonLabel, parts, label) {
+    checkerResult.className = "checker-result" + (kind === "outside" ? " is-outside" : kind === "unknown" ? " is-unknown" : "");
+    checkerResult.innerHTML = "";
+    checkerResult.appendChild(el("strong", { text: title }));
+    if (label) checkerResult.appendChild(el("p", { class: "result-address", text: label }));
+    checkerResult.appendChild(el("p", { text: body }));
+    const btn = el("button", { type: "button", class: "btn btn-primary btn-lg", text: buttonLabel });
+    btn.addEventListener("click", () => { transferAddress(parts, label); openRequestModal(btn); });
+    checkerResult.appendChild(btn);
+    checkerResult.hidden = false;
+  }
+  function transferAddress(parts, label) {
+    const typed = checkerInput.value.trim();
+    if (parts && (parts.street || parts.city || parts.zip)) {
+      $("#address").value = parts.street || typed;
+      if (parts.city) $("#city").value = parts.city;
+      if (parts.zip) $("#zip").value = parts.zip.slice(0, 10);
+    } else {
+      $("#address").value = typed || label || "";
+    }
+    ["address", "city", "zip"].forEach((id) => setError(id, ""));
+  }
+
+  checkerForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    if (checking) return;
+    hideSuggestions();
+    const q = checkerInput.value.trim();
+    checkerResult.hidden = true;
+    if (q.length < 5) {
+      checkerStatus.textContent = "Please enter your full property address.";
+      checkerInput.focus();
+      return;
+    }
+    checking = true;
+    checkerBtn.classList.add("is-loading"); checkerBtn.disabled = true; checkerBtn.setAttribute("aria-busy", "true");
+    checkerStatus.textContent = "Checking your address...";
+    let result = null;
+    try {
+      if (chosen && chosen.label === q && Number.isFinite(chosen.lat)) {
+        result = chosen;
+      } else {
+        const r = await fetch("/api/geocode?mode=verify&q=" + encodeURIComponent(q));
+        const data = r.ok ? await r.json() : null;
+        if (data && data.ok) result = data;
+      }
+    } catch (_) { result = null; }
+    checkerStatus.textContent = "";
+    checking = false;
+    checkerBtn.classList.remove("is-loading"); checkerBtn.disabled = false; checkerBtn.removeAttribute("aria-busy");
+
+    if (!result || !result.precise || !Number.isFinite(result.lat) || !Number.isFinite(result.lon)) {
+      showResult("unknown", "We couldn't verify that address.",
+        "Check the address and try again, or send us a service request and we'll confirm availability.",
+        "Request Services", result ? result.parts : null, result ? result.label : "");
+      return;
+    }
+    const miles = milesBetween(SAVANNAH, { lat: result.lat, lon: result.lon });
+    if (miles <= SERVICE_RADIUS_MILES) {
+      showResult("inside", "Great news — your property appears to be within our service area!",
+        (function(m){ return "You're about " + m + (m === 1 ? " mile" : " miles") + " from Savannah. Request your free estimate and we'll be in touch."; })(Math.max(1, Math.round(miles))),
+        "Request Services", result.parts, result.label);
+    } else {
+      showResult("outside", "This address appears to be outside our standard service area.",
+        "We may still be able to help depending on the project. Send us a request and we'll let you know.",
+        "Request Services Anyway", result.parts, result.label);
     }
   });
 })();
