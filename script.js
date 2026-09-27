@@ -410,7 +410,7 @@ const MAX_PHOTO_MB = 10;
       const r = await fetch("/api/geocode?mode=suggest&q=" + encodeURIComponent(q), { signal: suggestAbort.signal });
       if (!r.ok) return;
       const data = await r.json();
-      if (checkerInput.value.trim() !== q) return; // stale response
+      if (checking || !checkerResult.hidden || checkerInput.value.trim() !== q) return; // stale response
       suggestions = data.suggestions || [];
       renderSuggestions();
     } catch (_) { /* suggestions are a convenience only */ }
@@ -458,6 +458,8 @@ const MAX_PHOTO_MB = 10;
   checkerForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     if (checking) return;
+    clearTimeout(suggestTimer);
+    if (suggestAbort) suggestAbort.abort();
     hideSuggestions();
     const q = checkerInput.value.trim();
     checkerResult.hidden = true;

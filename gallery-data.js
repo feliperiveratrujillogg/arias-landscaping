@@ -7,8 +7,8 @@
 
       Before / after pair (gets a drag slider + lightbox):
         { type: "before-after",
-          before: "images/gallery/front-yard-before.jpg",
-          after:  "images/gallery/front-yard-after.jpg",
+          before: "images/gallery/front-yard-before.webp",
+          after:  "images/gallery/front-yard-after.webp",
           alt:    "Front yard cleanup in Savannah — before and after",
           caption:"Front yard cleanup" }
 
@@ -27,47 +27,10 @@
 
 window.GALLERY_ITEMS = [
   {
-    type: "before-after",
-    before: "images/gallery/placeholder-before.svg",
-    after: "images/gallery/placeholder-after.svg",
-    alt: "Placeholder before-and-after slot — replace with a real Arias Landscaping project photo",
-    caption: "Before & after — your project photo goes here",
-    placeholder: true
-  },
-  {
     type: "photo",
     src: "images/gallery/placeholder-photo.svg",
     alt: "Placeholder project photo slot — replace with a real Arias Landscaping project photo",
-    caption: "Completed project — your photo goes here",
-    placeholder: true
-  },
-  {
-    type: "photo",
-    src: "images/gallery/placeholder-photo.svg",
-    alt: "Placeholder project photo slot — replace with a real Arias Landscaping project photo",
-    caption: "Completed project — your photo goes here",
-    placeholder: true
-  },
-  {
-    type: "before-after",
-    before: "images/gallery/placeholder-before.svg",
-    after: "images/gallery/placeholder-after.svg",
-    alt: "Placeholder before-and-after slot — replace with a real Arias Landscaping project photo",
-    caption: "Before & after — your project photo goes here",
-    placeholder: true
-  },
-  {
-    type: "photo",
-    src: "images/gallery/placeholder-photo.svg",
-    alt: "Placeholder project photo slot — replace with a real Arias Landscaping project photo",
-    caption: "Completed project — your photo goes here",
-    placeholder: true
-  },
-  {
-    type: "photo",
-    src: "images/gallery/placeholder-photo.svg",
-    alt: "Placeholder project photo slot — replace with a real Arias Landscaping project photo",
-    caption: "Completed project — your photo goes here",
+    caption: "Project photos coming soon",
     placeholder: true
   }
 ];
