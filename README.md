@@ -11,6 +11,6 @@ Static site (plain HTML/CSS/JS, no build step). Hosted on Vercel.
 
 ## Common edits
 - **Add project photos:** drop photos into `images/gallery/`, then edit `gallery-data.js`.
-- **Hero photo:** add `images/hero.jpg` and set `--hero-image: url("images/hero.jpg");` on the `.hero` rule in `styles.css`.
+- **Hero video:** replace `videos/hero.mp4` (and `videos/hero-poster.jpg`). Keep it short, muted, ~720px wide, under ~2 MB. The dark overlay is `.hero-media::after` in `styles.css`.
 - **Form email:** submissions go through Formspree to ariaslandscaping912@gmail.com. The form ID is `FORM_ENDPOINT` at the top of `script.js`; the destination email is managed in the Formspree dashboard.
 - **Site URL:** if the domain changes, update the `canonical`, `og:url`, `og:image` and JSON-LD `url` values in `index.html`.

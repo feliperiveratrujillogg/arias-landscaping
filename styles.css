@@ -115,29 +115,19 @@ p { margin: 0 0 1em; }
 
 /* ---------- Hero ---------- */
 .hero {
-  /* Swap in a real photo: --hero-image: url("images/hero.jpg"); */
-  --hero-image: none;
   position: relative; color: #fff; background: var(--gray-900); overflow: hidden;
   padding: clamp(56px, 9vw, 120px) 0;
 }
 .hero-media {
-  position: absolute; inset: 0;
-  background-color: #1b3d27;
-  background-image:
-    linear-gradient(105deg, rgba(14,28,18,.92) 0%, rgba(14,28,18,.72) 45%, rgba(14,28,18,.45) 100%),
-    var(--hero-image),
-    repeating-linear-gradient(115deg, #234f31 0 90px, #1f4a2d 90px 180px),
-    linear-gradient(180deg, #2a5a36, #17371f);
-  background-size: cover; background-position: center;
+  position: absolute; inset: 0; background: #17371f; overflow: hidden;
 }
+.hero-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 40%; }
 .hero-media::after {
-  /* subtle grass-blade texture */
+  /* dimming overlay so the headline stays readable */
   content: ""; position: absolute; inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='60' viewBox='0 0 120 60'%3E%3Cg fill='none' stroke='%23ffffff' stroke-opacity='.04' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M10 58 Q14 40 8 22M30 58 Q26 42 34 26M52 58 Q58 44 50 28M74 58 Q70 40 78 24M96 58 Q102 44 94 30M114 58 Q110 42 118 26'/%3E%3C/g%3E%3C/svg%3E");
-  background-size: 120px 60px; background-position: bottom; opacity: .9;
-  mask-image: linear-gradient(to top, #000 20%, transparent 70%);
-  -webkit-mask-image: linear-gradient(to top, #000 20%, transparent 70%);
+  background: linear-gradient(105deg, rgba(10, 22, 14, .88) 0%, rgba(10, 22, 14, .72) 45%, rgba(10, 22, 14, .55) 100%);
 }
+@media (prefers-reduced-motion: reduce) { .hero-video { display: none; } .hero-media { background: #17371f url("../videos/hero-poster.jpg") center/cover; } }
 .hero-inner { position: relative; max-width: 760px; margin-left: 0; }
 .hero h1 { color: #fff; max-width: 14ch; }
 .eyebrow { display: inline-block; font-size: .8rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--green); margin: 0 0 12px; }

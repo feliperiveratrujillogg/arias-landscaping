@@ -27,10 +27,23 @@
 
 window.GALLERY_ITEMS = [
   {
+    type: "before-after",
+    before: "images/gallery/front-yard-before.webp",
+    after: "images/gallery/front-yard-after.webp",
+    alt: "Front yard in Savannah before and after Arias Landscaping mowed, trimmed the shrubs, and installed fresh mulch",
+    caption: "Front yard cleanup, shrub trimming & mulch"
+  },
+  {
+    type: "photo",
+    src: "images/gallery/front-yard-after.webp",
+    alt: "Completed front yard with freshly mowed lawn, rounded shrubs, and new mulch beds",
+    caption: "Finished front yard"
+  },
+  {
     type: "photo",
     src: "images/gallery/placeholder-photo.svg",
     alt: "Placeholder project photo slot — replace with a real Arias Landscaping project photo",
-    caption: "Project photos coming soon",
+    caption: "More project photos coming soon",
     placeholder: true
   }
 ];
