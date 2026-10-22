@@ -121,7 +121,7 @@ p { margin: 0 0 1em; }
 .hero-media {
   position: absolute; inset: 0; background: #17371f; overflow: hidden;
 }
-.hero-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 40%; }
+.hero-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 62%; }
 .hero-media::after {
   /* dimming overlay so the headline stays readable */
   content: ""; position: absolute; inset: 0;
